@@ -1,0 +1,108 @@
+========================================================
+   HUONG DAN CAI DAT VA SU DUNG - THT DOCSTUDIO AI
+========================================================
+
+Cam on ban da tai THT DocStudio AI - phan mem AI sua loi
+chinh ta, dich Han-Nom, hoan toan MIEN PHI.
+
+--------------------------------------------------------
+BUOC 1: CAI DAT PHAN MEM
+--------------------------------------------------------
+1. Bam dup chuot vao file "THT_DocStudio_AI_Setup.exe"
+2. Neu Windows hien canh bao mau xanh "Windows protected
+   your PC" -> bam "More info" -> bam "Run anyway"
+   (day la canh bao binh thuong voi phan mem khong mua
+   chung chi thuong mai, khong phai virus)
+3. Lam theo man hinh cai dat: bam Next -> tick vao o
+   "Tao icon ngoai Desktop" neu muon -> bam Install
+4. Cai xong, mo phan mem tu icon vua tao tren Desktop
+   (hoac tu Start Menu)
+
+De GO CAI DAT sau nay: vao Windows Settings > Apps >
+tim "THT DocStudio AI" > Uninstall. (Giong nhu go
+CapCut, Photoshop binh thuong.)
+
+--------------------------------------------------------
+BUOC 2: LAY VA NHAP API KEY GEMINI (MIEN PHI)
+--------------------------------------------------------
+Phan mem can 1 "chia khoa" (API key) MIEN PHI cua rieng
+BAN de goi AI Gemini cua Google. Moi nguoi dung 1 key
+rieng, khong ai dung chung ai.
+
+Cach lay key (khoang 2 phut):
+1. Mo trinh duyet, vao dia chi:
+   https://aistudio.google.com/app/apikey
+2. Dang nhap bang tai khoan Google (Gmail) cua ban
+3. Bam nut "Create API key" (hoac "Tao API key")
+4. Copy doan ma vua hien ra (dang: AIzaSy........)
+
+Cach nhap key vao phan mem:
+1. Mo THT DocStudio AI
+2. Bam nut "Cai dat" (bieu tuong banh rang) o goc tren
+3. O tab "Sua loi van ban", tim muc "Gemini"
+4. Dan (Ctrl+V) key vua copy vao o "API key"
+5. Bam "Kiem tra key" de chac chan key hoat dong (se
+   bao "OK" neu dung)
+6. Bam "Luu" o cuoi cua so
+
+XONG! Tu do phan mem se tu dung key cua ban de sua loi
+va dich Han-Nom.
+
+--------------------------------------------------------
+BUOC 3 (TUY CHON): CAI OLLAMA DE CHAY AI HOAN TOAN
+                    MIEN PHI, KHONG GIOI HAN, OFFLINE
+--------------------------------------------------------
+Neu ban khong muon phu thuoc Google, hoac muon dung AI
+khong gioi han so lan, co the cai them Ollama de chay AI
+ngay tren may tinh (khong can mang, khong can key).
+
+Yeu cau may tinh: nen co card do hoa (GPU) rieng, cang
+nhieu VRAM cang tot (toi thieu 6GB de chay muot).
+
+Cach cai:
+1. Tai Ollama tai dia chi chinh thuc:
+   https://ollama.com/download
+2. Chon ban Windows, tai ve va cai dat nhu phan mem
+   binh thuong (Next -> Next -> Finish)
+3. Sau khi cai xong, mo PowerShell (bam nut Start, go
+   "PowerShell", Enter), go lenh sau de tai 1 model AI
+   ve may (khoang 4-5GB, can internet de tai 1 lan duy
+   nhat, sau do dung offline hoan toan):
+
+   ollama pull qwen2.5:7b
+
+4. Cho tai xong, mo THT DocStudio AI > Cai dat > doi
+   "Provider" thanh "ollama" > Luu
+
+--------------------------------------------------------
+BUOC 4 (NANG CAO, KHONG BAT BUOC): LLAMA.CPP
+--------------------------------------------------------
+Day la lua chon danh cho nguoi da quen thuoc voi lap
+trinh/bien dich phan mem - KHONG can thiet cho da so
+nguoi dung. Neu ban da tu build san mot server llama.cpp
+rieng, chi can vao Cai dat > tab "Sua loi van ban" >
+muc "llama.cpp" > nhap dia chi server cua ban (vi du:
+http://localhost:8080).
+
+Neu chua biet llama.cpp la gi, cu bo qua buoc nay - dung
+Gemini (Buoc 2) hoac Ollama (Buoc 3) la du dung tot roi.
+
+--------------------------------------------------------
+CAU HOI THUONG GAP
+--------------------------------------------------------
+H: Phan mem bao "API key chua sang" / loi ket noi?
+D: Kiem tra lai da dan dung key chua, key co con dau
+   cach thua khong, va may tinh co dang ket noi Internet
+   khong.
+
+H: Dung Ollama co ton tien khong?
+D: Khong, Ollama va cac model tai ve deu mien phi hoan
+   toan, chay ngay tren may ban.
+
+H: Toi muon dung ca Gemini lan Ollama cung luc?
+D: Duoc - vao Cai dat, tick chon "Tu dong chuyen sang
+   model local khi Gemini loi" de 2 ben ho tro nhau.
+
+--------------------------------------------------------
+Can ho tro them, lien he: [dien thong tin lien he cua ban]
+--------------------------------------------------------
