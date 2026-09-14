@@ -323,11 +323,13 @@ a {
 .hero h1 {
     margin: 0;
 
-    font-size: clamp(48px, 6vw, 76px);
+    font-size: clamp(40px, 5.5vw, 76px);
     line-height: 1.05;
     font-weight: 800;
 
     color: #244b35;
+
+    white-space: nowrap;
 }
 
 .hero-family {
@@ -442,13 +444,15 @@ a {
         "Times New Roman",
         serif;
 
-    font-size: clamp(48px, 6vw, 76px);
+    font-size: clamp(40px, 5.5vw, 76px);
 
     line-height: 0.95;
 
     color: var(--green-dark);
 
     margin-bottom: 8px;
+
+    white-space: nowrap;
 }
 
 .hero h2 {
@@ -1044,7 +1048,7 @@ a {
     }
 
     .hero h1 {
-        font-size: 48px;
+        font-size: clamp(30px, 9vw, 48px);
     }
 
     .hero h2 {
@@ -1138,7 +1142,7 @@ a {
 @media (max-width: 450px) {
 
     .hero h1 {
-        font-size: 40px;
+        font-size: clamp(26px, 10vw, 40px);
     }
 
     .hero h2 {
