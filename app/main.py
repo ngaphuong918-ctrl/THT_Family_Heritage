@@ -1,7 +1,7 @@
 from datetime import date
 
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Form, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
@@ -302,6 +302,92 @@ async def home(request: Request):
             "title": "THT Gia Phả – Family Heritage"
         }
     )
+
+
+# =========================================================
+# TRANG FORM THÊM THÀNH VIÊN
+# =========================================================
+
+@app.get("/members/new", response_class=HTMLResponse)
+async def new_member_form(request: Request):
+
+    db = SessionLocal()
+
+    try:
+        family = db.query(Family).first()
+    finally:
+        db.close()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="members/new.html",
+        context={
+            "title": "Thêm thành viên – THT Gia Phả",
+            "family": family,
+        }
+    )
+
+
+def _parse_form_date(value: str | None):
+
+    if value:
+        try:
+            return date.fromisoformat(value)
+        except ValueError:
+            return None
+
+    return None
+
+
+@app.post("/members/new")
+async def create_member_form(
+    request: Request,
+    family_name: str = Form(None),
+    full_name: str = Form(...),
+    chi_ho: str = Form(None),
+    gender: str = Form(None),
+    birth_date: str = Form(None),
+    death_date: str = Form(None),
+    birth_place: str = Form(None),
+    death_place: str = Form(None),
+    biography: str = Form(None),
+    photo_url: str = Form(None),
+    youtube_url: str = Form(None),
+):
+
+    db = SessionLocal()
+
+    try:
+        family = db.query(Family).first()
+
+        if not family:
+            family = Family(
+                name=(family_name or "Gia đình của tôi"),
+            )
+            db.add(family)
+            db.commit()
+            db.refresh(family)
+
+        family_id = family.id
+
+    finally:
+        db.close()
+
+    create_person(
+        family_id=family_id,
+        full_name=full_name,
+        chi_ho=(chi_ho or None),
+        gender=(gender or None),
+        birth_date=_parse_form_date(birth_date),
+        death_date=_parse_form_date(death_date),
+        birth_place=(birth_place or None),
+        death_place=(death_place or None),
+        biography=(biography or None),
+        photo_url=(photo_url or None),
+        youtube_url=(youtube_url or None),
+    )
+
+    return RedirectResponse(url="/members", status_code=303)
 
 
 # =========================================================

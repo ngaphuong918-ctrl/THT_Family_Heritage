@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Thêm thành viên – THT Gia Phả</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/css/style.css"
+    >
+
+    <style>
+
+        .form-page {
+            width: 90%;
+            max-width: 720px;
+            margin: 50px auto 100px;
+        }
+
+        .form-back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--green);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-back:hover {
+            color: var(--green-dark);
+        }
+
+        .form-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 40px;
+        }
+
+        .form-card h1 {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 28px;
+            color: var(--green-dark);
+            margin-bottom: 8px;
+        }
+
+        .form-card .form-subtitle {
+            color: var(--text-light);
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+        }
+
+        .form-group .hint {
+            font-weight: 400;
+            color: var(--text-light);
+            font-size: 12px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            color: var(--text-dark);
+            background: var(--cream);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--green);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 30px 0;
+        }
+
+        .form-submit {
+            border: none;
+            background: var(--green);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            width: 100%;
+        }
+
+        .form-submit:hover {
+            background: var(--green-dark);
+        }
+
+        .family-name-box {
+            background: var(--green-light);
+            border-radius: 12px;
+            padding: 16px 18px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: var(--green-dark);
+        }
+
+        @media (max-width: 700px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-card {
+                padding: 25px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- HEADER -->
+
+    <header class="header">
+
+        <div class="logo">
+
+            <div class="logo-tree">🌳</div>
+
+            <div>
+                <div class="logo-chinese">泰 鴻 薪</div>
+                <div class="logo-title">THT Gia Phả</div>
+                <div class="logo-subtitle">Family Heritage</div>
+            </div>
+
+        </div>
+
+
+        <nav class="nav">
+
+            <a href="/">⌂ Trang chủ</a>
+            <a href="#">🌳 Gia phả</a>
+            <a href="/members" class="active">👥 Thành viên</a>
+            <a href="#">📷 Hình ảnh</a>
+            <a href="#">📚 Tư liệu</a>
+            <a href="#">📰 Tin tức</a>
+            <a href="#">⚙ Cài đặt</a>
+
+        </nav>
+
+
+        <div class="header-right">
+            <button class="login-button">👤 Đăng nhập</button>
+        </div>
+
+    </header>
+
+
+
+    <!-- FORM -->
+
+    <div class="form-page">
+
+        <a href="/members" class="form-back">← Quay lại danh sách thành viên</a>
+
+
+        <div class="form-card">
+
+            <h1>Thêm thành viên mới</h1>
+            <p class="form-subtitle">Điền thông tin bên dưới để thêm một người vào gia phả.</p>
+
+
+            {% if not family %}
+            <div class="family-name-box">
+                👋 Đây là thành viên đầu tiên! Hãy đặt tên cho dòng họ của bạn trước.
+            </div>
+            {% endif %}
+
+
+            <form method="post" action="/members/new">
+
+                {% if not family %}
+                <div class="form-group">
+                    <label>Tên dòng họ <span class="hint">(ví dụ: Họ Trần, Họ Nguyễn...)</span></label>
+                    <input type="text" name="family_name" placeholder="Họ Trần" required>
+                </div>
+                <hr class="form-divider">
+                {% endif %}
+
+
+                <div class="form-group">
+                    <label>Họ và tên <span class="hint">(bắt buộc)</span></label>
+                    <input type="text" name="full_name" placeholder="Nguyễn Văn A" required>
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label>Giới tính</label>
+                        <select name="gender">
+                            <option value="">-- Chọn --</option>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Chi/Nhánh</label>
+                        <input type="text" name="chi_ho" placeholder="Chi 1">
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label>Ngày sinh</label>
+                        <input type="date" name="birth_date">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ngày mất <span class="hint">(nếu đã mất)</span></label>
+                        <input type="date" name="death_date">
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label>Nơi sinh</label>
+                        <input type="text" name="birth_place" placeholder="Nam Định">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nơi mất</label>
+                        <input type="text" name="death_place">
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+                    <label>Ảnh đại diện <span class="hint">(dán link ảnh, có thể để trống)</span></label>
+                    <input type="text" name="photo_url" placeholder="https://...">
+                </div>
+
+
+                <div class="form-group">
+                    <label>Video YouTube <span class="hint">(nếu có, có thể để trống)</span></label>
+                    <input type="text" name="youtube_url" placeholder="https://youtube.com/...">
+                </div>
+
+
+                <div class="form-group">
+                    <label>Tiểu sử / Ghi chú</label>
+                    <textarea name="biography" placeholder="Vài dòng về cuộc đời, sự nghiệp..."></textarea>
+                </div>
+
+
+                <button type="submit" class="form-submit">Lưu thành viên</button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- FOOTER -->
+
+    <footer class="footer">
+        <div class="footer-logo">🌳 <strong>THT Gia Phả</strong> <span>Family Heritage</span></div>
+        <p>Lưu giữ cội nguồn – Kết nối các thế hệ</p>
+        <p class="copyright">© 2026 THT Gia Phả – Family Heritage</p>
+    </footer>
+
+
+</body>
+
+</html>
