@@ -1,6 +1,6 @@
-from datetime import date, datetime
+from datetime import datetime
 
-from sqlalchemy import Date, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .database import Base
@@ -30,18 +30,37 @@ class Person(Base):
         nullable=False
     )
 
+    # Các tên gọi truyền thống (thường dùng trong gia phả người Việt gốc Hoa)
+    ten_huy: Mapped[str | None] = mapped_column(
+        String(200),
+        nullable=True
+    )
+
+    ten_tu: Mapped[str | None] = mapped_column(
+        String(200),
+        nullable=True
+    )
+
+    ten_hieu: Mapped[str | None] = mapped_column(
+        String(200),
+        nullable=True
+    )
+
     gender: Mapped[str | None] = mapped_column(
         String(20),
         nullable=True
     )
 
-    birth_date: Mapped[date | None] = mapped_column(
-        Date,
+    # Lưu dạng chữ tự do (vd: "1974", "khoảng 1850", "22 tháng 5 năm 1974"...)
+    # vì gia phả thường chỉ nhớ năm hoặc theo âm lịch, không phải lúc nào
+    # cũng có đủ ngày/tháng/năm chính xác.
+    birth_date: Mapped[str | None] = mapped_column(
+        String(100),
         nullable=True
     )
 
-    death_date: Mapped[date | None] = mapped_column(
-        Date,
+    death_date: Mapped[str | None] = mapped_column(
+        String(100),
         nullable=True
     )
 
@@ -53,6 +72,24 @@ class Person(Base):
     death_place: Mapped[str | None] = mapped_column(
         String(300),
         nullable=True
+    )
+
+    que_quan: Mapped[str | None] = mapped_column(
+        String(300),
+        nullable=True
+    )
+
+    nghe_nghiep: Mapped[str | None] = mapped_column(
+        String(200),
+        nullable=True
+    )
+
+    # Tình trạng tách riêng khỏi ngày mất - vì có người đã mất nhưng
+    # không nhớ/không ghi ngày mất, và ngược lại.
+    is_alive: Mapped[bool] = mapped_column(
+        Boolean,
+        default=True,
+        nullable=False
     )
 
     biography: Mapped[str | None] = mapped_column(

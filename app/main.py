@@ -1,6 +1,9 @@
+import os
 from datetime import date
 
-from fastapi import FastAPI, Form, Request
+import cloudinary
+import cloudinary.uploader
+from fastapi import FastAPI, Form, Request, UploadFile
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -17,6 +20,18 @@ from app.models.relationship_service import (
     get_children,
     get_parents,
     get_spouses,
+)
+
+
+# =========================================================
+# CẤU HÌNH CLOUDINARY (LƯU TRỮ ẢNH)
+# Đọc 3 thông tin từ biến môi trường đặt trên Render
+# =========================================================
+
+cloudinary.config(
+    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.environ.get("CLOUDINARY_API_KEY"),
+    api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
 )
 
 
@@ -79,15 +94,27 @@ class PersonCreate(BaseModel):
 
     chi_ho: str | None = None
 
+    ten_huy: str | None = None
+
+    ten_tu: str | None = None
+
+    ten_hieu: str | None = None
+
     gender: str | None = None
 
-    birth_date: date | None = None
+    birth_date: str | None = None
 
-    death_date: date | None = None
+    death_date: str | None = None
 
     birth_place: str | None = None
 
     death_place: str | None = None
+
+    que_quan: str | None = None
+
+    nghe_nghiep: str | None = None
+
+    is_alive: bool = True
 
     biography: str | None = None
 
@@ -197,11 +224,17 @@ async def create_person_api(person_data: PersonCreate):
         family_id=person_data.family_id,
         full_name=person_data.full_name,
         chi_ho=person_data.chi_ho,
+        ten_huy=person_data.ten_huy,
+        ten_tu=person_data.ten_tu,
+        ten_hieu=person_data.ten_hieu,
         gender=person_data.gender,
         birth_date=person_data.birth_date,
         death_date=person_data.death_date,
         birth_place=person_data.birth_place,
         death_place=person_data.death_place,
+        que_quan=person_data.que_quan,
+        nghe_nghiep=person_data.nghe_nghiep,
+        is_alive=person_data.is_alive,
         biography=person_data.biography,
         photo_url=person_data.photo_url,
         youtube_url=person_data.youtube_url,
@@ -328,31 +361,26 @@ async def new_member_form(request: Request):
     )
 
 
-def _parse_form_date(value: str | None):
-
-    if value:
-        try:
-            return date.fromisoformat(value)
-        except ValueError:
-            return None
-
-    return None
-
-
 @app.post("/members/new")
 async def create_member_form(
     request: Request,
     family_name: str = Form(None),
     full_name: str = Form(...),
     chi_ho: str = Form(None),
+    ten_huy: str = Form(None),
+    ten_tu: str = Form(None),
+    ten_hieu: str = Form(None),
     gender: str = Form(None),
     birth_date: str = Form(None),
     death_date: str = Form(None),
     birth_place: str = Form(None),
     death_place: str = Form(None),
+    que_quan: str = Form(None),
+    nghe_nghiep: str = Form(None),
+    tinh_trang: str = Form("alive"),
     biography: str = Form(None),
-    photo_url: str = Form(None),
     youtube_url: str = Form(None),
+    photo_file: UploadFile | None = None,
 ):
 
     db = SessionLocal()
@@ -373,17 +401,36 @@ async def create_member_form(
     finally:
         db.close()
 
+    # Tải ảnh lên Cloudinary nếu có chọn file
+    photo_url = None
+
+    if photo_file is not None and photo_file.filename:
+        file_bytes = await photo_file.read()
+
+        if file_bytes:
+            upload_result = cloudinary.uploader.upload(
+                file_bytes,
+                folder="tht-gia-pha",
+            )
+            photo_url = upload_result.get("secure_url")
+
     create_person(
         family_id=family_id,
         full_name=full_name,
         chi_ho=(chi_ho or None),
+        ten_huy=(ten_huy or None),
+        ten_tu=(ten_tu or None),
+        ten_hieu=(ten_hieu or None),
         gender=(gender or None),
-        birth_date=_parse_form_date(birth_date),
-        death_date=_parse_form_date(death_date),
+        birth_date=(birth_date or None),
+        death_date=(death_date or None),
         birth_place=(birth_place or None),
         death_place=(death_place or None),
+        que_quan=(que_quan or None),
+        nghe_nghiep=(nghe_nghiep or None),
+        is_alive=(tinh_trang != "deceased"),
         biography=(biography or None),
-        photo_url=(photo_url or None),
+        photo_url=photo_url,
         youtube_url=(youtube_url or None),
     )
 
@@ -401,6 +448,7 @@ async def members_page(request: Request):
 
     try:
         persons = db.query(Person).all()
+        family = db.query(Family).first()
     finally:
         db.close()
 
@@ -410,5 +458,6 @@ async def members_page(request: Request):
         context={
             "title": "Thành viên – THT Gia Phả",
             "persons": persons,
+            "family": family,
         }
     )

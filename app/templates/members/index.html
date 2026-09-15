@@ -17,6 +17,100 @@
         href="/static/css/style.css"
     >
 
+    <style>
+
+        .member-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .member-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(30, 60, 40, 0.04);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .member-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .member-photo {
+            width: 100%;
+            height: 180px;
+            background: var(--green-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            overflow: hidden;
+        }
+
+        .member-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .member-info {
+            padding: 18px;
+        }
+
+        .member-info h3 {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 18px;
+            color: var(--green-dark);
+            margin-bottom: 4px;
+        }
+
+        .member-chi {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+
+        .member-dates {
+            font-size: 13px;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .member-status {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+        .status-alive {
+            background: var(--green-light);
+            color: var(--green-dark);
+        }
+
+        .status-deceased {
+            background: #f0ece4;
+            color: #7a6a55;
+        }
+
+        @media (max-width: 1150px) {
+            .member-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .member-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+
 </head>
 
 
@@ -147,7 +241,7 @@
             </div>
 
             <h3>
-                Họ Trần
+                {{ family.name if family else "Chưa đặt tên dòng họ" }}
             </h3>
 
             <p>
@@ -166,7 +260,7 @@
 
     <section class="cards-section">
 
-        <div class="section-heading">
+        <div class="section-heading" style="display: flex; justify-content: space-between; align-items: center;">
 
             <div>
 
@@ -176,6 +270,9 @@
 
                 <h2>
                     Danh sách thành viên
+                    {% if persons %}
+                    <span style="font-size: 16px; color: var(--text-light); font-weight: 400;">({{ persons|length }} người)</span>
+                    {% endif %}
                 </h2>
 
             </div>
@@ -191,6 +288,56 @@
         </div>
 
 
+
+        {% if persons %}
+
+        <!-- =================================================
+             DANH SÁCH THÀNH VIÊN
+        ================================================== -->
+
+        <div class="member-grid">
+
+            {% for person in persons %}
+
+            <div class="member-card">
+
+                <div class="member-photo">
+                    {% if person.photo_url %}
+                    <img src="{{ person.photo_url }}" alt="{{ person.full_name }}">
+                    {% else %}
+                    👤
+                    {% endif %}
+                </div>
+
+                <div class="member-info">
+
+                    <h3>{{ person.full_name }}</h3>
+
+                    {% if person.chi_ho %}
+                    <div class="member-chi">{{ person.chi_ho }}</div>
+                    {% endif %}
+
+                    {% if person.birth_date or person.death_date %}
+                    <div class="member-dates">
+                        {{ person.birth_date or "?" }} – {{ person.death_date or "" }}
+                    </div>
+                    {% endif %}
+
+                    {% if person.is_alive %}
+                    <span class="member-status status-alive">Còn sống</span>
+                    {% else %}
+                    <span class="member-status status-deceased">Đã mất</span>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
 
         <!-- =================================================
              EMPTY STATE
@@ -208,7 +355,7 @@
 
             <p>
                 Hãy thêm thành viên đầu tiên
-                vào gia phả Họ Trần.
+                vào gia phả {{ family.name if family else "" }}.
             </p>
 
 
@@ -223,6 +370,8 @@
             </a>
 
         </div>
+
+        {% endif %}
 
     </section>
 
