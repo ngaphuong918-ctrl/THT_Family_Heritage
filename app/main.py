@@ -1,4 +1,5 @@
 import os
+import unicodedata
 from datetime import date
 
 import cloudinary
@@ -13,7 +14,12 @@ from app.models import init_database
 from app.models.database import SessionLocal
 from app.models.family import Family
 from app.models.person import Person
-from app.models.person_service import create_person
+from app.models.person_service import (
+    create_person,
+    delete_person,
+    get_person,
+    update_person,
+)
 from app.models.relationship_service import (
     add_parent_child,
     add_marriage,
@@ -21,6 +27,22 @@ from app.models.relationship_service import (
     get_parents,
     get_spouses,
 )
+
+
+def _norm(value: str | None) -> str | None:
+    """
+    Chuẩn hóa chữ tiếng Việt về dạng thống nhất (NFC),
+    tránh lỗi hiển thị dấu bị lệch do bàn phím gõ dấu kiểu "rời" (NFD).
+    """
+    if value is None:
+        return None
+
+    value = value.strip()
+
+    if not value:
+        return None
+
+    return unicodedata.normalize("NFC", value)
 
 
 # =========================================================
@@ -390,7 +412,7 @@ async def create_member_form(
 
         if not family:
             family = Family(
-                name=(family_name or "Gia đình của tôi"),
+                name=(_norm(family_name) or "Gia đình của tôi"),
             )
             db.add(family)
             db.commit()
@@ -416,30 +438,117 @@ async def create_member_form(
 
     create_person(
         family_id=family_id,
-        full_name=full_name,
-        chi_ho=(chi_ho or None),
-        ten_huy=(ten_huy or None),
-        ten_tu=(ten_tu or None),
-        ten_hieu=(ten_hieu or None),
-        gender=(gender or None),
-        birth_date=(birth_date or None),
-        death_date=(death_date or None),
-        birth_place=(birth_place or None),
-        death_place=(death_place or None),
-        que_quan=(que_quan or None),
-        nghe_nghiep=(nghe_nghiep or None),
+        full_name=_norm(full_name),
+        chi_ho=_norm(chi_ho),
+        ten_huy=_norm(ten_huy),
+        ten_tu=_norm(ten_tu),
+        ten_hieu=_norm(ten_hieu),
+        gender=_norm(gender),
+        birth_date=_norm(birth_date),
+        death_date=_norm(death_date),
+        birth_place=_norm(birth_place),
+        death_place=_norm(death_place),
+        que_quan=_norm(que_quan),
+        nghe_nghiep=_norm(nghe_nghiep),
         is_alive=(tinh_trang != "deceased"),
-        biography=(biography or None),
+        biography=_norm(biography),
         photo_url=photo_url,
-        youtube_url=(youtube_url or None),
+        youtube_url=_norm(youtube_url),
     )
 
     return RedirectResponse(url="/members", status_code=303)
 
 
 # =========================================================
-# TRANG THÀNH VIÊN
+# TRANG SỬA THÀNH VIÊN
 # =========================================================
+
+@app.get("/members/{person_id}/edit", response_class=HTMLResponse)
+async def edit_member_form(request: Request, person_id: int):
+
+    person = get_person(person_id)
+
+    if person is None:
+        return RedirectResponse(url="/members", status_code=303)
+
+    return templates.TemplateResponse(
+        request=request,
+        name="members/edit.html",
+        context={
+            "title": "Sửa thành viên – THT Gia Phả",
+            "person": person,
+        }
+    )
+
+
+@app.post("/members/{person_id}/edit")
+async def edit_member_submit(
+    request: Request,
+    person_id: int,
+    full_name: str = Form(...),
+    chi_ho: str = Form(None),
+    ten_huy: str = Form(None),
+    ten_tu: str = Form(None),
+    ten_hieu: str = Form(None),
+    gender: str = Form(None),
+    birth_date: str = Form(None),
+    death_date: str = Form(None),
+    birth_place: str = Form(None),
+    death_place: str = Form(None),
+    que_quan: str = Form(None),
+    nghe_nghiep: str = Form(None),
+    tinh_trang: str = Form("alive"),
+    biography: str = Form(None),
+    youtube_url: str = Form(None),
+    photo_file: UploadFile | None = None,
+):
+
+    # Chỉ tải ảnh mới lên Cloudinary nếu người dùng có chọn ảnh khác
+    photo_url = None
+
+    if photo_file is not None and photo_file.filename:
+        file_bytes = await photo_file.read()
+
+        if file_bytes:
+            upload_result = cloudinary.uploader.upload(
+                file_bytes,
+                folder="tht-gia-pha",
+            )
+            photo_url = upload_result.get("secure_url")
+
+    update_person(
+        person_id=person_id,
+        full_name=_norm(full_name),
+        chi_ho=_norm(chi_ho),
+        ten_huy=_norm(ten_huy),
+        ten_tu=_norm(ten_tu),
+        ten_hieu=_norm(ten_hieu),
+        gender=_norm(gender),
+        birth_date=_norm(birth_date),
+        death_date=_norm(death_date),
+        birth_place=_norm(birth_place),
+        death_place=_norm(death_place),
+        que_quan=_norm(que_quan),
+        nghe_nghiep=_norm(nghe_nghiep),
+        is_alive=(tinh_trang != "deceased"),
+        biography=_norm(biography),
+        photo_url=photo_url,
+        youtube_url=_norm(youtube_url),
+    )
+
+    return RedirectResponse(url="/members", status_code=303)
+
+
+# =========================================================
+# XÓA THÀNH VIÊN
+# =========================================================
+
+@app.post("/members/{person_id}/delete")
+async def delete_member(person_id: int):
+
+    delete_person(person_id)
+
+    return RedirectResponse(url="/members", status_code=303)
 
 @app.get("/members", response_class=HTMLResponse)
 async def members_page(request: Request):

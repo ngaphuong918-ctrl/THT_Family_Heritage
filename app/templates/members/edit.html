@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Sửa thành viên – THT Gia Phả</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/css/style.css"
+    >
+
+    <style>
+
+        .form-page {
+            width: 90%;
+            max-width: 720px;
+            margin: 50px auto 100px;
+        }
+
+        .form-back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--green);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-back:hover {
+            color: var(--green-dark);
+        }
+
+        .form-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 40px;
+        }
+
+        .form-card h1 {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 28px;
+            color: var(--green-dark);
+            margin-bottom: 8px;
+        }
+
+        .form-card .form-subtitle {
+            color: var(--text-light);
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+        }
+
+        .form-group .hint {
+            font-weight: 400;
+            color: var(--text-light);
+            font-size: 12px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            color: var(--text-dark);
+            background: var(--cream);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--green);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 30px 0;
+        }
+
+        .form-submit {
+            border: none;
+            background: var(--green);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            width: 100%;
+        }
+
+        .form-submit:hover {
+            background: var(--green-dark);
+        }
+
+        .status-toggle {
+            display: flex;
+            gap: 10px;
+        }
+
+        .status-option {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .status-option input {
+            display: none;
+        }
+
+        .status-option:has(input:checked) {
+            border-color: var(--green);
+            background: var(--green-light);
+            color: var(--green-dark);
+        }
+
+        .current-photo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 12px;
+        }
+
+        .current-photo img {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1px solid var(--border);
+        }
+
+        .current-photo span {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .danger-zone {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--border);
+            text-align: center;
+        }
+
+        .btn-delete {
+            border: 1px solid #c99;
+            background: white;
+            color: #a33;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .btn-delete:hover {
+            background: #fdecec;
+        }
+
+        @media (max-width: 700px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-card {
+                padding: 25px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- HEADER -->
+
+    <header class="header">
+
+        <div class="logo">
+
+            <div class="logo-tree">🌳</div>
+
+            <div>
+                <div class="logo-chinese">泰 鴻 薪</div>
+                <div class="logo-title">THT Gia Phả</div>
+                <div class="logo-subtitle">Family Heritage</div>
+            </div>
+
+        </div>
+
+
+        <nav class="nav">
+
+            <a href="/">⌂ Trang chủ</a>
+            <a href="#">🌳 Gia phả</a>
+            <a href="/members" class="active">👥 Thành viên</a>
+            <a href="#">📷 Hình ảnh</a>
+            <a href="#">📚 Tư liệu</a>
+            <a href="#">📰 Tin tức</a>
+            <a href="#">⚙ Cài đặt</a>
+
+        </nav>
+
+
+        <div class="header-right">
+            <button class="login-button">👤 Đăng nhập</button>
+        </div>
+
+    </header>
+
+
+
+    <!-- FORM -->
+
+    <div class="form-page">
+
+        <a href="/members" class="form-back">← Quay lại danh sách thành viên</a>
+
+
+        <div class="form-card">
+
+            <h1>Sửa thông tin thành viên</h1>
+            <p class="form-subtitle">Cập nhật thông tin của {{ person.full_name }}.</p>
+
+
+            <form method="post" action="/members/{{ person.id }}/edit" enctype="multipart/form-data">
+
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label>Họ và tên <span class="hint">(bắt buộc)</span></label>
+                        <input type="text" name="full_name" value="{{ person.full_name }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Giới tính</label>
+                        <select name="gender">
+                            <option value="">-- Chọn --</option>
+                            <option value="Nam" {% if person.gender == "Nam" %}selected{% endif %}>Nam</option>
+                            <option value="Nữ" {% if person.gender == "Nữ" %}selected{% endif %}>Nữ</option>
+                        </select>
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label>Tên húy <span class="hint">(nếu có)</span></label>
+                        <input type="text" name="ten_huy" value="{{ person.ten_huy or '' }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tên tự <span class="hint">(nếu có)</span></label>
+                        <input type="text" name="ten_tu" value="{{ person.ten_tu or '' }}">
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label>Tên hiệu <span class="hint">(nếu có)</span></label>
+                        <input type="text" name="ten_hieu" value="{{ person.ten_hieu or '' }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Chi/Nhánh</label>
+                        <input type="text" name="chi_ho" value="{{ person.chi_ho or '' }}">
+                    </div>
+
+                </div>
+
+
+                <hr class="form-divider">
+
+
+                <div class="form-group">
+                    <label>Tình trạng</label>
+                    <div class="status-toggle">
+
+                        <label class="status-option">
+                            <input type="radio" name="tinh_trang" value="alive" {% if person.is_alive %}checked{% endif %}>
+                            🌿 Còn sống
+                        </label>
+
+                        <label class="status-option">
+                            <input type="radio" name="tinh_trang" value="deceased" {% if not person.is_alive %}checked{% endif %}>
+                            🕯 Đã mất
+                        </label>
+
+                    </div>
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label>Ngày sinh <span class="hint">(ghi tự do)</span></label>
+                        <input type="text" name="birth_date" value="{{ person.birth_date or '' }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ngày mất <span class="hint">(ghi tự do)</span></label>
+                        <input type="text" name="death_date" value="{{ person.death_date or '' }}">
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label>Nơi sinh</label>
+                        <input type="text" name="birth_place" value="{{ person.birth_place or '' }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nơi mất</label>
+                        <input type="text" name="death_place" value="{{ person.death_place or '' }}">
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label>Quê quán</label>
+                        <input type="text" name="que_quan" value="{{ person.que_quan or '' }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nghề nghiệp</label>
+                        <input type="text" name="nghe_nghiep" value="{{ person.nghe_nghiep or '' }}">
+                    </div>
+
+                </div>
+
+
+                <hr class="form-divider">
+
+
+                <div class="form-group">
+                    <label>Ảnh đại diện</label>
+
+                    {% if person.photo_url %}
+                    <div class="current-photo">
+                        <img src="{{ person.photo_url }}" alt="{{ person.full_name }}">
+                        <span>Ảnh hiện tại — chọn ảnh mới bên dưới nếu muốn thay đổi</span>
+                    </div>
+                    {% endif %}
+
+                    <input type="file" name="photo_file" accept="image/*">
+                </div>
+
+
+                <div class="form-group">
+                    <label>Video YouTube</label>
+                    <input type="text" name="youtube_url" value="{{ person.youtube_url or '' }}">
+                </div>
+
+
+                <div class="form-group">
+                    <label>Tiểu sử / Ghi chú</label>
+                    <textarea name="biography">{{ person.biography or '' }}</textarea>
+                </div>
+
+
+                <button type="submit" class="form-submit">Lưu thay đổi</button>
+
+            </form>
+
+
+            <div class="danger-zone">
+
+                <form
+                    method="post"
+                    action="/members/{{ person.id }}/delete"
+                    onsubmit="return confirm('Bạn có chắc muốn xóa {{ person.full_name }}? Không thể hoàn tác.');"
+                >
+                    <button type="submit" class="btn-delete">🗑 Xóa thành viên này</button>
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- FOOTER -->
+
+    <footer class="footer">
+        <div class="footer-logo">🌳 <strong>THT Gia Phả</strong> <span>Family Heritage</span></div>
+        <p>Lưu giữ cội nguồn – Kết nối các thế hệ</p>
+        <p class="copyright">© 2026 THT Gia Phả – Family Heritage</p>
+    </footer>
+
+
+</body>
+
+</html>

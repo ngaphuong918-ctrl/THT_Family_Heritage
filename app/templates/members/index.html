@@ -87,6 +87,18 @@
             border-radius: 20px;
         }
 
+        .member-edit-link {
+            display: block;
+            margin-top: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        .member-edit-link:hover {
+            color: var(--green-dark);
+        }
+
         .status-alive {
             background: var(--green-light);
             color: var(--green-dark);
@@ -328,6 +340,8 @@
                     {% else %}
                     <span class="member-status status-deceased">Đã mất</span>
                     {% endif %}
+
+                    <a href="/members/{{ person.id }}/edit" class="member-edit-link">✏ Sửa thông tin</a>
 
                 </div>
 
